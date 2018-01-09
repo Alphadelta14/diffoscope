@@ -24,6 +24,8 @@ from . import feeders
 from .exc import RequiredToolNotFound
 from .diff import diff, reverse_unified_diff, diff_split_lines
 from .excludes import command_excluded
+from .config import Config
+
 
 logger = logging.getLogger(__name__)
 
@@ -230,6 +232,7 @@ class Difference(object):
 
     @staticmethod
     def from_command_exc(klass, path1, path2, *args, **kwargs):
+        logger.debug("Starting execution of command %s", klass)
         command_args = []
         if 'command_args' in kwargs:
             command_args = kwargs['command_args']
@@ -247,8 +250,31 @@ class Difference(object):
                 command.start()
             return feeder, command, False
 
-        feeder1, command1, excluded1 = command_and_feeder(path1)
-        feeder2, command2, excluded2 = command_and_feeder(path2)
+        results = {}
+
+        if Config().parallel:
+          import dill
+          from .parallel.comparison_pool import ComparisonPool, \
+                                                CommandFailedToExecute
+          pool = ComparisonPool()
+
+          try:
+            pool.map(command_and_feeder, args=[path1, path2], callback=results)
+          except CommandFailedToExecute as e:
+            logger.debug("Command failed while executing %s", e)
+
+        if not results:
+          logger.debug("Parallel execution failed or disabled. \
+                        Falling back to serial execution.")
+
+          cmd1 = command_and_feeder(path1)
+          cmd2 = command_and_feeder(path2)
+        else:
+          cmd1, cmd2 = results[0], results[1]
+
+        feeder1, command1, excluded1 = cmd1
+        feeder2, command2, excluded2 = cmd2
+
         if not feeder1 or not feeder2:
             assert excluded1 or excluded2
             return None, True
