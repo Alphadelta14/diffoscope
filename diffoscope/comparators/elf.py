@@ -258,6 +258,61 @@ READELF_COMMANDS = (
 )
 
 
+class Radare2Command(Command):
+
+    @tool_required('radare2')
+    def cmdline(self):
+        return ['radare2', '-e', 'io.cache=true', '-q0', self.path,
+                 '-2', '-c'] + self.options()
+
+    def options(self):
+        return []
+
+    def filter(self, line):
+        if line.startswith(b'invalid'):
+            return b''
+        return line
+
+
+class Radare2FullDump(Radare2Command):
+    def options(self):
+        return ["pi"]
+
+
+class Radare2Sections(Radare2Command):
+    def options(self):
+        return ["S"]
+
+class Rabin2FileProperties(Radare2Command):
+
+    @tool_required('rabin2')
+    def cmdline(self):
+        return ['radare2', '-e', 'io.cache=true', '-q0', self.path,
+                 '-2', '-c'] + self.options()
+
+
+class Radare2SectionDump(Radare2Command):
+    def __init__(self, path=None, section=None, *args, **kwargs):
+        super().__init__(path, *args, **kwargs)
+        self._section = section
+
+    def options(self):
+        return (["s {} ; pi {}".format(self._section._section_start,
+                                       self._section._section_size)])
+
+
+RADARE2_COMMANDS = (
+    Radare2Sections,
+)
+
+
+def _compare_radare2_elf_data(path1, path2):
+    return [
+        Difference.from_command(x, path1, path2)
+        for x in list(RADARE2_COMMANDS)
+    ]
+
+
 def _compare_elf_data(path1, path2):
     return [
         Difference.from_command(x, path1, path2)
@@ -403,6 +458,7 @@ def get_debug_link(path):
 
 class ElfContainer(Container):
     auto_diff_metadata = False
+    required_tool = 'readelf'
 
     SECTION_FLAG_MAPPING = {
         'X': ElfCodeSection,
@@ -549,6 +605,62 @@ class ElfContainer(Container):
         objcopy('--add-gnu-debuglink={}'.format(dest_path), self.source.path)
 
         logger.debug('Installed debug symbols at %s', dest_path)
+
+    def get_member_names(self):
+        return self._sections.keys()
+
+    def get_member(self, member_name):
+        return self._sections[member_name]
+
+
+class Radare2Section(ElfSection):
+
+    def __init__(self, container, name, start, size):
+      super().__init__(elf_container=container, member_name=name)
+      self._section_name = name
+      self._section_start = start
+      self._section_size = size
+      self._section_cmd = Radare2SectionDump
+
+
+    def compare(self, other, source=None):
+      return Difference.from_command(self._section_cmd,
+                                     self.path,
+                                     other.path,
+                                     command_args=[self])
+
+
+
+class Radare2Container(Container):
+
+    required_tool = 'radare2'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        logger.debug("Creating Radare2Container for %s", self.source.path)
+
+        output = subprocess.check_output(self.__get_sections(),
+                                         shell=False,
+                                         stderr=subprocess.DEVNULL)
+
+        self._sections = self.__format_sections(output)
+
+
+    def __get_sections(self):
+        return (Radare2Sections(path=self.source.path).cmdline())
+
+    def __format_sections(self, output):
+        sections = {}
+        for line in output.splitlines():
+            line = line.decode('utf-8').split(' ')
+
+            if line[7].startswith('.'):
+                sections[line[7]] = Radare2Section(container = self,
+                                                   name = line[7],
+                                                   start = line[4][3:],
+                                                   size = line[5][3:])
+        return sections
+
 
     def get_member_names(self):
         return self._sections.keys()
