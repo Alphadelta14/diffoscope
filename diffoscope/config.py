@@ -89,3 +89,9 @@ class Config(object):
         self.check_ge("max_diff_block_lines", "max_page_diff_block_lines")
         self.check_ge("max_report_size", "max_page_size")
         self.check_ge("max_report_size", "max_page_size_child")
+
+    def check_parallel(self):
+        from importlib import util
+        multiprocess = util.find_spec("multiprocess")
+        dill = util.find_spec("dill")
+        self.parallel = (multiprocess and dill)
