@@ -1,3 +1,9 @@
+diffoscope (91~bpo9+1) stretch-backports; urgency=medium
+
+  * Rebuild for stretch-backports.
+
+ -- Mattia Rizzolo <mattia@debian.org>  Tue, 06 Mar 2018 11:34:17 +0100
+
 diffoscope (91) unstable; urgency=medium
 
   [ Mattia Rizzolo ]
