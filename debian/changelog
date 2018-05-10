@@ -1,3 +1,10 @@
+diffoscope (94~bpo9+1) stretch-backports; urgency=medium
+
+  * Rebuild for stretch-backports.
+  * tests/test_binary: don't capture unused output from subprocess.
+
+ -- Mattia Rizzolo <mattia@debian.org>  Thu, 10 May 2018 16:21:30 +0200
+
 diffoscope (94) unstable; urgency=medium
 
   [ Chris Lamb ]
