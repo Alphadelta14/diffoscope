@@ -1,3 +1,10 @@
+diffoscope (94~bpo9+2) stretch-backports; urgency=medium
+
+  * Drop dependency on python3-distutils, not present in stretch as it's part
+    of the core python distribution.  Closes: #898683
+
+ -- Mattia Rizzolo <mattia@debian.org>  Tue, 15 May 2018 10:00:03 +0200
+
 diffoscope (94~bpo9+1) stretch-backports; urgency=medium
 
   * Rebuild for stretch-backports.
