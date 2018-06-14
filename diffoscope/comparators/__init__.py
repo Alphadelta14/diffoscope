@@ -117,8 +117,8 @@ class ComparatorManager(object):
                 except ImportError:
                     if idx < len(xs) - 1:
                         continue
-                    raise ImportError("Could not import {}{}".format(
-                        "any of" if len(xs) > 1 else '',
+                    raise ImportError("Could not import {}: {}".format(
+                        "any of comparators" if len(xs) > 1 else 'comparator',
                         ', '.join(xs)
                     ))
 
