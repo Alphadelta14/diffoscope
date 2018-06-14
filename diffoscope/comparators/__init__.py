@@ -107,7 +107,7 @@ class ComparatorManager(object):
         self.classes = []
 
         for xs in self.COMPARATORS:
-            for x in xs:
+            for idx, x in enumerate(xs):
                 package, klass_name = x.rsplit('.', 1)
 
                 try:
@@ -115,15 +115,16 @@ class ComparatorManager(object):
                         'diffoscope.comparators.{}'.format(package)
                     )
                 except ImportError:
-                    continue
+                    if idx < len(xs) - 1:
+                        continue
+                    raise ImportError("Could not import {}{}".format(
+                        "any of" if len(xs) > 1 else '',
+                        ', '.join(xs)
+                    ))
+
 
                 self.classes.append(getattr(mod, klass_name))
                 break
-            else:  # noqa
-                raise ImportError("Could not import {}{}".format(
-                    "any of" if len(xs) > 1 else '',
-                    ', '.join(xs)
-                ))
 
         logger.debug("Loaded %d comparator classes", len(self.classes))
 
