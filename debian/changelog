@@ -1,3 +1,13 @@
+diffoscope (104~bpo9+1) stretch-backports; urgency=medium
+
+  * Rebuild for stretch-backports.
+
+  [ Chris Lamb ]
+  * Prevent test failures when running under stretch-backports by checking the
+    ocaml version number.  Closes: #911846
+
+ -- Mattia Rizzolo <mattia@debian.org>  Sun, 28 Oct 2018 12:35:07 +0100
+
 diffoscope (104) unstable; urgency=medium
 
   [ Chris Lamb ]
