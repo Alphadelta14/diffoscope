@@ -1,3 +1,9 @@
+diffoscope (111~bpo9+1) stretch-backports; urgency=medium
+
+  * Rebuild for stretch-backports.
+
+ -- Mattia Rizzolo <mattia@debian.org>  Tue, 12 Feb 2019 09:23:15 +0100
+
 diffoscope (111) unstable; urgency=medium
 
   * Fix a regression introduced via #920701 where we stopped using the -dbgsym
