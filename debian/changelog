@@ -1,3 +1,10 @@
+diffoscope (78+deb9u1) stretch; urgency=medium
+
+  * tests:
+    + Fix ps tests to pass with the new ghostscript 9.26.  Closes: #925051
+
+ -- Mattia Rizzolo <mattia@debian.org>  Wed, 20 Mar 2019 17:27:42 +0100
+
 diffoscope (78) unstable; urgency=medium
 
   [ Brett Smith ]
