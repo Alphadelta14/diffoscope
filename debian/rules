@@ -14,7 +14,11 @@ ifneq ($(VERSION_dch),$(VERSION_py))
      $(error Version in debian/changelog does not match diffoscope version or backport policy)
     endif
   else
-   $(error Version in debian/changelog does not match diffoscope version)
+    ifeq ($(DIST),stretch)
+     $(info "Stable update!  ☺")
+    else
+     $(error Version in debian/changelog does not match diffoscope version)
+    endif
   endif
  endif
 endif
