@@ -1,3 +1,10 @@
+diffoscope (113~bpo9+1) stretch-backports; urgency=medium
+
+  * Rebuild for stretch-backports.
+  * Drop the new test dependency on black.
+
+ -- Mattia Rizzolo <mattia@debian.org>  Tue, 02 Apr 2019 20:56:43 +0200
+
 diffoscope (113) unstable; urgency=medium
 
   * Replace over 8 MB of Android boot ROM test suite fixtures with 14 KB
