@@ -30,7 +30,7 @@ from diffoscope.comparators.utils.specialize import (
 )
 
 from ..utils.data import load_fixture, get_data
-from ..utils.tools import skip_unless_file_version_is_at_least
+from ..utils.tools import skip_unless_file_version_is_between
 
 
 gzip1 = load_fixture('test1.gz')
@@ -61,7 +61,7 @@ def differences(gzip1, gzip2):
     return gzip1.compare(gzip2).details
 
 
-@skip_unless_file_version_is_at_least('5.33')
+@skip_unless_file_version_is_between('5.33', '5.36')
 def test_metadata(differences):
     assert differences[0].source1.startswith('filetype')
     assert differences[0].source2.startswith('filetype')
