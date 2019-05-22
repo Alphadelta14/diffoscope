@@ -24,7 +24,7 @@ import itertools
 from ..utils.data import load_fixture, get_data
 from ..utils.tools import (
     skip_unless_tools_exist,
-    skip_unless_file_version_is_at_least,
+    skip_unless_file_version_is_between,
 )
 
 gzip1 = load_fixture('containers/a.tar.gz')
@@ -66,7 +66,7 @@ def expected_type_diff(ext1, ext2):
 
 
 @skip_unless_tools_exist('xz')
-@skip_unless_file_version_is_at_least('5.33')
+@skip_unless_file_version_is_between('5.33', '5.36')
 def test_equal(set1):
     for x, y in itertools.product(TYPES, TYPES):
         diff = set1[x].compare(set1[y])
@@ -84,7 +84,7 @@ def test_equal(set1):
 
 
 @skip_unless_tools_exist('xz')
-@skip_unless_file_version_is_at_least('5.33')
+@skip_unless_file_version_is_between('5.33', '5.36')
 def test_different(set1, set2):
     for x, y in itertools.product(TYPES, TYPES):
         expected_diff = get_data('containers/different_files_expected_diff')

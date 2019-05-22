@@ -193,3 +193,8 @@ def skip_unless_module_exists(name):
 
 def skip_unless_file_version_is_at_least(version):
     return skip_unless_tool_is_at_least('file', file_version, version)
+
+
+def skip_unless_file_version_is_between(min_version, max_version):
+    return skip_unless_tool_is_between('file', file_version, min_version,
+            max_version)
