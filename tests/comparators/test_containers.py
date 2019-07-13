@@ -21,10 +21,13 @@ import pytest
 
 import itertools
 
+from distutils.version import LooseVersion
+
 from ..utils.data import load_fixture, get_data
 from ..utils.tools import (
     skip_unless_tools_exist,
     skip_unless_file_version_is_between,
+    file_version,
 )
 
 gzip1 = load_fixture('containers/a.tar.gz')
@@ -52,6 +55,12 @@ def set2(gzip2, bzip2, xz2):
 def expected_magic_diff(ext1, ext2):
     meta1 = get_data('containers/magic_%s' % ext1)
     meta2 = get_data('containers/magic_%s' % ext2)
+
+    # Monkey patch the modulo 2^32 size specifier from File(1), which changed
+    # as of version 5.36. See Merge request 27 on Salsa for details
+    if LooseVersion(file_version()) > LooseVersion("5.35"):
+        meta2 = meta2.replace("original size", "original size modulo 2^32")
+        meta1 = meta1.replace("original size", "original size modulo 2^32")
     return "@@ -1 +1 @@\n" + "-" + meta1 + "+" + meta2
 
 
@@ -66,7 +75,6 @@ def expected_type_diff(ext1, ext2):
 
 
 @skip_unless_tools_exist('xz')
-@skip_unless_file_version_is_between('5.33', '5.36')
 def test_equal(set1):
     for x, y in itertools.product(TYPES, TYPES):
         diff = set1[x].compare(set1[y])
@@ -84,7 +92,6 @@ def test_equal(set1):
 
 
 @skip_unless_tools_exist('xz')
-@skip_unless_file_version_is_between('5.33', '5.36')
 def test_different(set1, set2):
     for x, y in itertools.product(TYPES, TYPES):
         expected_diff = get_data('containers/different_files_expected_diff')
