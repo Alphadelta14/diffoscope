@@ -1,3 +1,9 @@
+diffoscope (128~bpo10+1) buster-backports; urgency=medium
+
+  * Rebuild for buster-backports.
+
+ -- Mattia Rizzolo <mattia@debian.org>  Sun, 27 Oct 2019 17:15:28 +0100
+
 diffoscope (128) unstable; urgency=medium
 
   * Query the container for the full path of the parallel R .rdx file for a
