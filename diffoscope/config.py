@@ -55,6 +55,7 @@ class Config:
 
         self.max_text_report_size = 0
 
+        self.difftool = None
         self.new_file = False
         self.fuzzy_threshold = 60
         self.enforce_constraints = True

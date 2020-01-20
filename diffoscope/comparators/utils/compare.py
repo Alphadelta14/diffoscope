@@ -20,8 +20,10 @@
 import io
 import os
 import sys
+import shlex
 import logging
 import binascii
+import subprocess
 
 from diffoscope.tools import tool_required
 from diffoscope.exc import RequiredToolNotFound
@@ -112,6 +114,20 @@ def compare_files(file1, file2, source=None, diff_content_only=False):
 
     specialize(file1)
     specialize(file2)
+
+    if (
+        Config().difftool
+        and not isinstance(file1, MissingFile)
+        and not isinstance(file2, MissingFile)
+        and not os.path.isdir(file1.path)
+        and not os.path.isdir(file2.path)
+    ):
+        cmd = "{} {} {}".format(
+            Config().difftool, shlex.quote(file1.path), shlex.quote(file2.path)
+        )
+        logger.debug("Calling external command %r", cmd)
+        subprocess.call(cmd, shell=True)
+
     if isinstance(file1, MissingFile):
         file1.other_file = file2
     elif isinstance(file2, MissingFile):

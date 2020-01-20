@@ -203,6 +203,13 @@ def create_parser():
         help='Write RsT text output to given file (use - for stdout)',
     )
     group1.add_argument(
+        '--difftool',
+        metavar='TOOL',
+        dest='difftool',
+        help='Compare differences using the specified external '
+        'command similar to git-difftool(1)',
+    )
+    group1.add_argument(
         '--profile',
         metavar='OUTPUT_FILE',
         dest='profile_output',
@@ -648,6 +655,7 @@ def run_diffoscope(parsed_args):
     Config().use_dbgsym = parsed_args.use_dbgsym
     Config().force_details = parsed_args.force_details
     Config().fuzzy_threshold = parsed_args.fuzzy_threshold
+    Config().difftool = parsed_args.difftool
     Config().new_file = parsed_args.new_file
     Config().excludes = parsed_args.excludes
     Config().exclude_commands = parsed_args.exclude_commands
