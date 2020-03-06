@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with diffoscope.  If not, see <https://www.gnu.org/licenses/>.
 
+import os
 import signal
 import hashlib
 import logging
@@ -85,13 +86,55 @@ def from_text_reader(in_file, filter=None):
     return from_raw_reader(in_file, encoding_filter)
 
 
+def get_cache_key(command):
+    print(command)
+    if not command.MEMOIZE_OUTPUT:
+        return
+
+    if not os.path.isfile(command.path):
+        return
+
+    sha1 = hashlib.sha1()
+
+    # Key on the contents of the file
+    with open(command.path, 'rb') as f:
+        while True:
+            data = f.read(2 ** 16)
+            if not data:
+                break
+            sha1.update(data)
+
+    # Vary via the stripped commandline too
+    sha1.update(command.shell_cmdline().encode('utf-8'))
+
+    return sha1.hexdigest()
+
+
 def from_command(command):
     def feeder(out_file):
-        with profile('command', command.cmdline()[0]):
-            feeder = from_raw_reader(command.stdout, command.filter)
-            end_nl = feeder(out_file)
-            returncode = command.returncode
-        if returncode not in (0, -signal.SIGTERM):
+        key = get_cache_key(command)
+
+        try:
+            # Cache hit
+            stdout = from_command.cache[key]
+            returncode = 0
+            logger.debug(
+                "Not running %s; we have already saved output",
+                command.cmdline(),
+            )
+        except KeyError:
+            with profile('command', command.cmdline()[0]):
+                stdout = command.stdout
+                returncode = command.returncode
+
+        feeder = from_raw_reader(stdout, command.filter)
+        end_nl = feeder(out_file)
+
+        if returncode in (0, -signal.SIGTERM):
+            # On success, potentially save the output for later
+            if key is not None:
+                from_command.cache[key] = stdout
+        else:
             # On error, default to displaying all lines of standard output.
             output = command.stderr
             if not output and command.stdout:
@@ -107,6 +150,9 @@ def from_command(command):
         return end_nl
 
     return feeder
+
+
+from_command.cache = {}
 
 
 def from_text(content):

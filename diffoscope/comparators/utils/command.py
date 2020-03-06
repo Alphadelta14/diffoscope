@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 
 class Command(metaclass=abc.ABCMeta):
     MASK_STDERR = False
+    MEMOIZE_OUTPUT = False
     MAX_STDERR_LINES = 50
     VALID_RETURNCODES = {0}
 

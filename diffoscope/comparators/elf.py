@@ -56,6 +56,8 @@ logger = logging.getLogger(__name__)
 
 
 class Readelf(Command):
+    MEMOIZE_OUTPUT = True
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # we don't care about the name of the archive
@@ -203,6 +205,8 @@ class ReadelfStringSection(ReadElfSection):
 
 
 class ObjdumpSection(Command):
+    MEMOIZE_OUTPUT = True
+
     def __init__(self, path, section_name, *args, **kwargs):
         self._path = path
         self._path_bin = path.encode('utf-8')

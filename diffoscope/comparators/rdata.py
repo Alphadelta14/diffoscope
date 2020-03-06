@@ -131,6 +131,7 @@ class RdsReader(Command):
 
 class RdsFile(File):
     DESCRIPTION = "GNU R Rscript files (.rds)"
+    MEMOIZE_OUTPUT = True
 
     @classmethod
     def recognizes(cls, file):
@@ -148,6 +149,7 @@ class RdsFile(File):
 
 class RdbReader(Command):
     MASK_STDERR = True
+    MEMOIZE_OUTPUT = True
 
     @tool_required('Rscript')
     def cmdline(self):
