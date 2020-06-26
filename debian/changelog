@@ -1,3 +1,9 @@
+diffoscope (149~bpo10+1) buster-backports; urgency=medium
+
+  * Rebuild for buster-backports.
+
+ -- Mattia Rizzolo <mattia@debian.org>  Fri, 26 Jun 2020 19:39:10 +0200
+
 diffoscope (149) unstable; urgency=medium
 
   [ Chris Lamb ]
