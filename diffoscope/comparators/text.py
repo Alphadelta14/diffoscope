@@ -26,19 +26,6 @@ from diffoscope.difference import Difference
 from .utils.file import File
 
 
-def order_only_difference(unified_diff):
-    diff_lines = unified_diff.splitlines()
-    added_lines = [line[1:] for line in diff_lines if line.startswith("+")]
-    removed_lines = [line[1:] for line in diff_lines if line.startswith("-")]
-    # Faster check: does number of lines match?
-    if len(added_lines) != len(removed_lines):
-        return False
-    return (
-        sorted(added_lines) == sorted(removed_lines)
-        and added_lines != removed_lines
-    )
-
-
 class TextFile(File):
     DESCRIPTION = "text files"
     FILE_TYPE_RE = re.compile(r"\btext\b")
@@ -61,11 +48,6 @@ class TextFile(File):
                 difference = Difference.from_text_readers(
                     my_content, other_content, self.name, other.name, source
                 )
-                # Check if difference is only in line order.
-                if difference and order_only_difference(
-                    difference.unified_diff
-                ):
-                    difference.add_comment("Ordering differences only")
                 if my_encoding != other_encoding:
                     if difference is None:
                         difference = Difference(
@@ -82,6 +64,10 @@ class TextFile(File):
                             )
                         ]
                     )
+
+                if difference:
+                    difference.check_for_ordering_differences()
+
                 return difference
         except (LookupError, UnicodeDecodeError):
             # unknown or misdetected encoding

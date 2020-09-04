@@ -370,6 +370,34 @@ class Difference:
         self._visuals.extend(visuals)
         self._size_cache = None
 
+    def has_ordering_differences_only(self):
+        """
+        Check if difference is only in line ordering.
+        """
+
+        if not self.unified_diff:
+            return False
+
+        diff_lines = self.unified_diff.splitlines()
+
+        added_lines = [line[1:] for line in diff_lines if line.startswith("+")]
+        removed_lines = [
+            line[1:] for line in diff_lines if line.startswith("-")
+        ]
+
+        # Faster check: does number of lines match?
+        if len(added_lines) != len(removed_lines):
+            return False
+
+        if added_lines == removed_lines:
+            return False
+
+        return sorted(added_lines) == sorted(removed_lines)
+
+    def check_for_ordering_differences(self):
+        if self.has_ordering_differences_only():
+            self.add_comment("Ordering differences only")
+
 
 class VisualDifference:
     def __init__(self, data_type, content, source):
