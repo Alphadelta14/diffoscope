@@ -1,3 +1,9 @@
+diffoscope (160~bpo10+1) buster-backports; urgency=medium
+
+  * Rebuild for buster-backports.
+
+ -- Mattia Rizzolo <mattia@debian.org>  Sun, 13 Sep 2020 18:48:33 +0200
+
 diffoscope (160) unstable; urgency=medium
 
   * Check that pgpdump is actually installed before attempting to run it.
