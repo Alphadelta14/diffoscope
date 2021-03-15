@@ -1,3 +1,9 @@
+diffoscope (168~bpo10+1) buster-backports; urgency=medium
+
+  * Rebuild for buster-backports.
+
+ -- Mattia Rizzolo <mattia@debian.org>  Mon, 15 Mar 2021 19:15:03 +0100
+
 diffoscope (168) unstable; urgency=medium
 
   * Don't call difflib.Differ.compare with very large inputs; it is at least
