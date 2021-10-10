@@ -1,3 +1,9 @@
+diffoscope (187~bpo11+1) bullseye-backports; urgency=medium
+
+  * Rebuild for bullseye-backports.
+
+ -- Mattia Rizzolo <mattia@debian.org>  Sun, 10 Oct 2021 16:19:29 +0200
+
 diffoscope (187) unstable; urgency=medium
 
   * Add support for comparing .pyc files. Thanks to Sergei Trofimovich.
