@@ -1,3 +1,9 @@
+diffoscope (199~bpo11+1) bullseye-backports; urgency=medium
+
+  * Rebuild for bullseye-backports.
+
+ -- Mattia Rizzolo <mattia@debian.org>  Mon, 10 Jan 2022 15:20:59 +0100
+
 diffoscope (199) unstable; urgency=medium
 
   [ Chris Lamb ]
