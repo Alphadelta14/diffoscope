@@ -1,3 +1,9 @@
+diffoscope (206~bpo11+1) bullseye-backports; urgency=medium
+
+  * Rebuild for bullseye-backports.
+
+ -- Mattia Rizzolo <mattia@debian.org>  Tue, 01 Mar 2022 13:24:51 +0100
+
 diffoscope (206) unstable; urgency=medium
 
   * Also allow "Unicode text, UTF-8 text" as well as "UTF-8 Unicode text" to
